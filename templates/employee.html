@@ -1,0 +1,85 @@
+<!doctype html>
+
+{% extends ./navbar.html %}
+{% block content %}
+
+{% if modal == 1 %}
+<div id="id01" class="w3-modal" style="display:block">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+      <header class="w3-container w3-red">
+        <span onclick="document.getElementById('id01').style.display='none'"
+        class="w3-button w3-display-topright">&times;</span>
+        <h2>Error</h2>
+      </header>
+      <div class="w3-container">
+        <p>The entered {{id}} is not correct!</p>
+      </div>
+    </div>
+  </div>
+{% end if %}
+
+<div class='panel-group'>
+  <div class='panel panel-success'>
+    <div class='panel-heading'>Add Employee</div>
+    <div class='panel-body'>
+
+      <form method='POST'>
+        <label>Employee Name:</label>
+        <input name='add_id' class='form-control' required>
+
+        <label>Payrate:</label>
+        <input name='payrate' class='form-control' required>
+
+        <button type='submit' class='btn btn-success'>Submit</button>
+      </form>
+    </div>
+  </div>
+  <div class='panel panel-primary'>
+    <div class='panel-heading'>Edit Employee</div>
+    <div class='panel-body'>
+
+      <form method='POST'>
+        <label>Employee ID:</label>
+        <input name='edit_id' class='form-control' required>
+
+        <label>Payrate:</label>
+        <input name='payrate' class='form-control' required>
+        <button type='submit' class='btn btn-primary'>Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <div class='panel panel-danger'>
+    <div class='panel-heading'>Delete Punch</div>
+    <div class='panel-body'>
+
+      <form method='POST'>
+        <label>Employee ID:</label>
+        <input name='delete_id' class='form-control' required>
+
+        <button type='submit' class='btn btn-danger'>Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<table class="table table-hover table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Employee ID</th>
+      <th>Employee Name</th>
+      <th>Pay Rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for emp in emps %}
+      <tr>
+        <th>{{emp['epe_id']}}</th>
+        <th>{{emp['name']}}</th>
+        <th>{{emp['pay_rate']}}</th>
+      </tr>
+    {% end for %}
+  </tbody>
+</table>
+{% end block %}
