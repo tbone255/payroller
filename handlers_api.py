@@ -25,40 +25,52 @@ class HomeHandler(BaseHandler):
 class PunchHandler(BaseHandler):
 
 
-    def get(self, modal=0, id=''):
+    def get(self, modal=0, err=None):
 
-        return self.render('./templates/punch.html', punches=self.dbm.get_punches(), name=self.dbm.get_employee_name, modal=modal, id=id)
+        return self.render('./templates/punch.html',get=self.get, punches=self.dbm.get_punches(), name=self.dbm.get_employee_name, modal=modal, id=err)
 
     def post(self):
         modal = 0
-        id = ''
+        self.err = ''
         add_id = self.get_argument('employee', None)
         edit_id = self.get_argument('edit_id', None)
         delete_id = self.get_argument('delete_id', None)
         if add_id:
             punch_type = self.get_argument('punchtype', None)
+            print str(punch_type)
             try:
                 punch_id = self.dbm.insert_punch(add_id, punch_type)
-                ret = {'punch_id': punch_id[0]}
+                if punch_id[0] == -1:
+                    print -1
+                    modal = 1
+                    if int(punch_type) == 1:
+                        self.err = 'Punch Type (Already Punched In)'
+                    elif int(punch_type) == 2:
+                        self.err = 'Punch Type (Already Punched Out)'
+                    print self.err
             except Exception as e:
-                print e
                 modal = 1
-                id = 'Employee ID'
+                self.err = 'Employee ID'
         elif edit_id:
             punch_type = self.get_argument('punchtype', None)
             try:
-                punch_id = self.dbm.update_punch(edit_id, punch_type)
+                if len(self.dbm.get_punch_pch_id(pch_id=edit_id)) == 1:
+                    punch_id = self.dbm.update_punch(edit_id, punch_type)
+                else:
+                    raise IntegrityError('Punch ID does not exist!')
             except Exception as e:
                 modal = 1
-                id = 'Punch ID.......'
+                self.err = 'Punch ID'
                 print e
         elif delete_id:
             try:
-                self.dbm.delete_punch(delete_id)
+                delete = self.dbm.delete_punch(delete_id)
+                if not(delete is None):
+                    raise IntegrityError(statement='Punch ID ' + delete_id + ' not valid!')
             except Exception as e:
                 modal = 1
-                id = 'Punch ID'
-        self.get(modal, id)
+                self.err = 'Punch ID'
+        self.get(modal, self.err)
 
     def not_valid(self):
         self.get()
@@ -68,8 +80,8 @@ class EmployeeHandler(BaseHandler):
     def get(self, modal=0, id=0):
         #return self.render('./templates/employees/view.html', )
         emps = self.dbm.get_employees()
-        self.render('./templates/employee.html', emps=emps, modal=modal, id=id)
-
+        self.render('./templates/employee.html', get=self.get, emps=emps, modal=modal, id=id)
+#document.getElementById('id01').style.display='none'
     def post(self):
         modal = 0
         id = ''

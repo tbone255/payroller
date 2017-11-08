@@ -1,70 +1,79 @@
-<!doctype html>
-
-{% extends ./navbar.html %}
-{% block content %}
+<!doctype html> {% extends ./navbar.html %} {% block content %}
 <h1>Punch In and Out</h1>
-
 {% if modal == 1 %}
 <div id="id01" class="w3-modal" style="display:block">
-    <div class="w3-modal-content w3-animate-top w3-card-4">
-      <header class="w3-container w3-red">
-        <span onclick="document.getElementById('id01').style.display='none'"
-        class="w3-button w3-display-topright">&times;</span>
-        <h2>Error</h2>
-      </header>
-      <div class="w3-container">
-        <p>The entered {{id}} is not correct!</p>
+  <div class="w3-modal-content w3-animate-top w3-card-4">
+    <header class="w3-container w3-red">
+      <a href="./punch">
+        <span onclick=""
+        class="w3-button w3-display-topright">&times;</span></a>
+      <h2>Error</h2>
+    </header>
+    <div class="w3-container">
+      <p>The entered {{id}} is not correct!</p>
+    </div>
+  </div>
+</div>
+{% end if %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <div class='panel panel-success'>
+        <div class='panel-heading'>Punch In/Out</div>
+        <div class='panel-body'>
+
+          <form method='POST'>
+            <label>Employee ID:</label>
+            <input name='employee' class='form-control' required>
+
+            <div class='radio' required>
+              <label><input type='radio' name='punchtype' value='1' required>Punch IN</label>
+              <label><input type='radio' name='punchtype' value='2'>Punch OUT</label>
+            </div>
+
+            <button type='submit' class='btn btn-success'>Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class='panel panel-primary'>
+        <div class='panel-heading'>Change Punch Type</div>
+        <div class='panel-body'>
+
+          <form method='POST'>
+            <label>Punch ID:</label>
+            <input name='edit_id' class='form-control' required>
+            <div class='radio'>
+              <label><input type='radio' name='punchtype' value='1' required>Punch IN</label>
+              <label><input type='radio' name='punchtype' value='2'>Punch OUT</label>
+            </div>
+            <button type='submit' class='btn btn-primary'>Submit</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-md-4">
+      <div class='panel panel-danger'>
+        <div class='panel-heading'>Delete Punch</div>
+        <div class='panel-body'>
+
+          <form method='POST'>
+            <label>Punch ID:</label>
+            <input name='delete_id' class='form-control' required>
+
+            <button type='submit' class='btn btn-danger'>Submit</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-{% end if %}
+</div>
 
-<div class='panel-group'>
-  <div class='panel panel-success'>
-    <div class='panel-heading'>Punch In/Out</div>
-    <div class='panel-body'>
 
-      <form method='POST'>
-        <label>Employee ID:</label>
-        <input name='employee' class='form-control' required>
 
-        <div class='radio' required>
-          <label><input type='radio' name='punchtype' value='1' required>Punch IN</label>
-          <label><input type='radio' name='punchtype' value='2'>Punch OUT</label>
-        </div>
-
-        <button type='submit' class='btn btn-success'>Submit</button>
-      </form>
-    </div>
-  </div>
-  <div class='panel panel-primary'>
-    <div class='panel-heading'>Change Punch Type</div>
-    <div class='panel-body'>
-
-      <form method='POST'>
-        <label>Punch ID:</label>
-        <input name='edit_id' class='form-control' required>
-        <div class='radio'>
-          <label><input type='radio' name='punchtype' value='1' required>Punch IN</label>
-          <label><input type='radio' name='punchtype' value='2'>Punch OUT</label>
-        </div>
-        <button type='submit' class='btn btn-primary'>Submit</button>
-      </form>
-    </div>
-  </div>
-
-  <div class='panel panel-danger'>
-    <div class='panel-heading'>Delete Punch</div>
-    <div class='panel-body'>
-
-      <form method='POST'>
-        <label>Punch ID:</label>
-        <input name='delete_id' class='form-control' required>
-
-        <button type='submit' class='btn btn-danger'>Submit</button>
-      </form>
-    </div>
-  </div>
 </div>
 
 <p><br /></p>
@@ -80,12 +89,12 @@
   </thead>
   <tbody>
     {% for punch in punches %}
-      <tr>
-        <th>{{punch['pch_id']}}</th>
-        <th>{{punch['date']}}</th>
-        <th>{{punch['epe_id']}}: {{ name(punch['epe_id'])[0]['name'] }}</th>
-        <th>{{punch['pte_id']}}</th>
-      </tr>
+    <tr>
+      <th>{{punch['pch_id']}}</th>
+      <th>{{punch['date']}}</th>
+      <th>{{punch['epe_id']}}: {{ name(punch['epe_id'])[0]['name'] }}</th>
+      <th>{{punch['pte_id']}}</th>
+    </tr>
     {% end for %}
   </tbody>
 </table>

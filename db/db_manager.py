@@ -55,12 +55,23 @@ class DBManager(object):
         q = select([punches_table]).order_by(desc(punches_table.c.pch_id))
         return self._execute_select(q)
 
+    def get_punch_pch_id(self, pch_id):
+        q = select([punches_table]).where(punches_table.c.pch_id == pch_id)
+        return self._execute_select(q)
+
+    def get_punches_epe(self, epe_id):
+        q = select([punches_table]).where(punches_table.c.epe_id == epe_id).order_by(desc(punches_table.c.pch_id))
+        return self._execute_select(q)
+
     def get_punch_types(self):
         q = select([punch_type_table])
         return self._execute_select(q)
 
     def insert_punch(self, epe_id, punch_type):
-
+        punches = self.get_punches_epe(epe_id)
+        if len(punches) > 0 and int(punches[0]['pte_id']) == int(punch_type):
+            print 'error'
+            return [-1]
         punch = {
             'date': datetime.utcnow(),
             'epe_id': epe_id,
@@ -73,6 +84,7 @@ class DBManager(object):
     def update_punch(self, pch_id, punch_type):
         q = punches_table.update().where(punches_table.c.pch_id == pch_id).values(pte_id=punch_type)
         punch_id = self._execute_update(q)
+        print type(punch_id)
         return punch_id
 
     def delete_punch(self, pch_id):
@@ -139,4 +151,5 @@ def fresh_start():
     DB_URI = 'mysql+mysqldb://root:toor@localhost/payroller'
     drop_tables(DB_URI)
     create_tables(DB_URI)
+
 fresh_start()
